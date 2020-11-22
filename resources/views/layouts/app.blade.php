@@ -15,25 +15,31 @@
                 <a href="" class="p-3"> Home </a>
             </li>
             <li>
-                <a href="" class="p-3"> Dashboard </a>
+                <a href="{{ route('dashboard') }}" class="p-3"> Dashboard </a>
             </li>
             <li>
                 <a href="" class="p-3"> Form </a>
             </li>
         </ul>
         <ul class="flex item-center">
-            <li>
-                <a href="" class="p-3"> Syauqi Jamil </a>
-            </li>
-            <li>
-                <a href="" class="p-3"> Login </a>
-            </li>
-            <li>
-                <a href="{{ route('register') }}" class="p-3"> Register </a>
-            </li>
-            <li>
-                <a href="" class="p-3"> Logout </a>
-            </li>
+            @if (auth()->user())
+                <li>
+                    <a href="" class="p-3"> Syauqi Jamil </a>
+                </li>
+                <li>
+                    <form action="{{ route('logout') }}" method="post" class="inline">
+                        @csrf
+                        <button>Logout</button>
+                    </form>
+                </li>
+            @else    
+                <li>
+                    <a href="{{ route('login') }}" class="p-3"> Login </a>
+                </li>
+                <li>
+                    <a href="{{ route('register') }}" class="p-3"> Register </a>
+                </li>
+            @endif
         </ul>
     </nav>
     @yield('content')
