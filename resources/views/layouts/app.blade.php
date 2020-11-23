@@ -22,9 +22,9 @@
             </li>
         </ul>
         <ul class="flex item-center">
-            @if (auth()->user())
+            @auth    
                 <li>
-                    <a href="" class="p-3"> Syauqi Jamil </a>
+                    <a href="" class="p-3"> {{ auth()->user()->name }} </a>
                 </li>
                 <li>
                     <form action="{{ route('logout') }}" method="post" class="inline">
@@ -32,14 +32,15 @@
                         <button>Logout</button>
                     </form>
                 </li>
-            @else    
+            @endauth
+            @guest
                 <li>
                     <a href="{{ route('login') }}" class="p-3"> Login </a>
                 </li>
                 <li>
                     <a href="{{ route('register') }}" class="p-3"> Register </a>
                 </li>
-            @endif
+            @endguest
         </ul>
     </nav>
     @yield('content')
