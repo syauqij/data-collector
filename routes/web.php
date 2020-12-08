@@ -25,3 +25,4 @@ Route::get('/forms', [FormController::class, 'index'])->name('forms');
 Route::get('/forms/create', [FormController::class, 'create'])->name('form.create');
 Route::post('/forms/{form}', [FormController::class, 'store']);
 Route::delete('/forms/{form}', [FormController::class, 'destroy'])->name('form.destroy');
+Route::get('/forms/{form}', [FormController::class, 'submit'])->name('form.submit');

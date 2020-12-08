@@ -3,14 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\Form;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Barryvdh\Debugbar\Facade as Debugbar;
 
 class FormController extends Controller
 {
-    public function index()
+    public function __construct()
     {
-        return view('forms.index');
+        $this->middleware(['auth']);
+    }
+
+    public function index()
+    {   
+        $forms = Form::get();
+
+        Debugbar::info($forms);
+
+        return view('forms.index', [
+            'forms' => $forms
+        ]);
     }
     
     public function create()
@@ -20,15 +32,23 @@ class FormController extends Controller
 
     public function store(Request $request)
     {           
-        //dd($request);
+        Debugbar::info($request);
 
         $validate = $this->validate($request, [
-            'title' => 'required|max:255',
-            'desc' => 'max:10',
+            'title' => 'required|max:150',
+            'desc' => 'max:255',
         ]);
+        
+        $fields_array = $request->fields;
+
+        foreach ($fields_array as $key => $field) {
+            $fields_array[$key]['order'] = $key;
+        }
+        $request->merge(['fields' => $fields_array]);
 
         $form = new Form;
 
+        $form->owner_id = $request->user()->id;
         $form->title = $request->title;
         $form->desc = $request->desc;
         $form->fields = $request->fields;
@@ -37,14 +57,18 @@ class FormController extends Controller
             return redirect()->route('forms');
         }
     }
+    
+    public function submit(Form $form)
+    {   
+        return view('forms.submit', compact('form'));
+    }
 
-
-    public function show()
+    public function destroy()
     {
         
     }
 
-    public function destroy()
+    public function show()
     {
         
     }
