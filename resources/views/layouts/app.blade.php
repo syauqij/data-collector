@@ -7,14 +7,17 @@
     <title>@yield('page_title')</title>
 
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    @livewireStyles
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-100">    
     @include('partials.navbar')
     
     @section('header')
     
     @show
 
+    @livewireScripts
+    
     <main>
         <div class="max-w-7xl mx-auto p-6 py-6 sm:px-6 lg:px-8">
             @yield('content')
