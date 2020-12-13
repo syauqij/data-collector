@@ -34,17 +34,12 @@ class FormController extends Controller
     {           
         Debugbar::info($request);
 
+        //dd($request);
+
         $validate = $this->validate($request, [
             'title' => 'required|max:150',
             'desc' => 'max:255',
         ]);
-        
-        $fields_array = $request->fields;
-
-        foreach ($fields_array as $key => $field) {
-            $fields_array[$key]['order'] = $key;
-        }
-        $request->merge(['fields' => $fields_array]);
 
         $form = new Form;
 
