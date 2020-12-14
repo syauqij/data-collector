@@ -190,11 +190,13 @@
                                 placeholder="Enter name for this option">
                     </div>
                     <div class="inline-flex items-center">
+                        @if ($loop->count > 1)
                         <a class="bg-red-500 text-white px-3 py-2" 
                             href="#" 
                             wire:click.prevent="removeAnswer({{$indexField}},{{$indexAnswer}})">
                             X
                         </a>
+                        @endif
                         @if ($loop->last)
                         <a class="bg-gray-500 text-white px-3 py-2 mx-2" 
                             wire:click.prevent="addAnswer({{$indexField}})"
