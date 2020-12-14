@@ -19,7 +19,7 @@ class Forms extends Component
         'fields.*.question' => 'required|min:5|max:150',
         'fields.*.min_char' => 'required_with:fields.*.max_char|integer|digits_between: 1,3',
         'fields.*.max_char' => 'required_with:fields.*.min_char|integer|gt:fields.*.min_char|digits_between: 1,3',
-        'fields.*.options.*' => 'required|min:1|max:255'
+        'fields.*.answers.*' => 'required|min:1|max:255'
     ];
 
     public function mount()
@@ -63,7 +63,7 @@ class Forms extends Component
                 'question' => 'New Question',
                 'multiple' => '',
                 'type' => $type,
-                'options' => ['']
+                'answers' => ['']
             ];
         }
     }
@@ -76,13 +76,13 @@ class Forms extends Component
 
     public function addAnswer($index)
     {   
-        array_push($this->fields[$index]['options'], 'New Answer');
+        array_push($this->fields[$index]['answers'], 'New Answer');
     }
 
     public function removeAnswer($indexField, $indexAnswer)
     {   
-        unset($this->fields[$indexField]['options'][$indexAnswer]);
-        $this->fields[$indexField]['options'] = array_values($this->fields[$indexField]['options']);
+        unset($this->fields[$indexField]['answers'][$indexAnswer]);
+        $this->fields[$indexField]['answers'] = array_values($this->fields[$indexField]['answers']);
     }
 
     public function render()

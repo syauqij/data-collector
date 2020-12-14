@@ -172,8 +172,8 @@
 
             <!--Option Answer -->
             <div class="flex flex-wrap -mx-3 mb-2">
-                @foreach ($field['options'] as $indexAnswer => $option)
-                    <?php $answerId = "fields." . $indexField . ".options." . $indexAnswer;?>
+                @foreach ($field['answers'] as $indexAnswer => $option)
+                    <?php $answerId = "fields." . $indexField . ".answers." . $indexAnswer;?>
 
                     <div class="inline-flex items-center w-9/12 mx-3 my-2">
                         @if ($field['multiple'] == 'on')
@@ -185,7 +185,7 @@
                         <input class="w-full bg-gray-100 text-gray-700 border border-gray-300 rounded py-3 px-4 
                                 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                                 wire:model="{{$answerId}}"
-                                name="fields[{{$indexField}}][options][]"
+                                name="fields[{{$indexField}}][answers][]"
                                 type="text" 
                                 placeholder="Enter name for this option">
                     </div>
