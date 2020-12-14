@@ -29,29 +29,6 @@ class FormController extends Controller
     {
         return view('forms.create');
     }
-
-    public function store(Request $request)
-    {           
-        Debugbar::info($request);
-
-        //dd($request);
-
-        $validate = $this->validate($request, [
-            'title' => 'required|max:150',
-            'desc' => 'max:255',
-        ]);
-
-        $form = new Form;
-
-        $form->owner_id = $request->user()->id;
-        $form->title = $request->title;
-        $form->desc = $request->desc;
-        $form->fields = $request->fields;
-
-        if($form->save()){
-            return redirect()->route('forms');
-        }
-    }
     
     public function submit(Form $form)
     {   

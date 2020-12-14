@@ -1,37 +1,37 @@
 <div>
-<form action="{{ route('form.create') }}" method="POST">
+<form wire:submit.prevent="submit" action="{{ route('form.create') }}" method="POST">
     @csrf
 
-    <!------------- Title ----------------------->
-    <div class="flex flex-wrap -mx-3">
-        <div class="w-full px-3">
-            <input class="block w-full bg-gray-100 text-gray-700 border border-gray-200 py-3 px-4 mb-3 
-                        leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                    type="text"
-                    name="title" 
-                    placeholder="Enter form title" 
-                    value="{{ old('title', 'Untitled form') }}">
+    <div class="mb-6 py-6 px-4 hover:bg-gray-200">
+        <!------------- Title ----------------------->
+        <div class="flex flex-wrap -mx-3">
+            <div class="w-full px-3">
+                <input class="block w-full bg-gray-100 text-gray-700 border border-gray-300 py-3 px-4 mb-3 
+                            leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                        wire:model.lazy="title"
+                        name="title" 
+                        type="text"
+                        placeholder="Enter form title">
+            </div>
+            @error('title') @include('partials.error_message') @enderror
         </div>
 
-        @error('title')
-            @include('partials.error_message')
-        @enderror
-    </div>
-
-    <!------------- Description ------------------>
-    <div class="flex flex-wrap -mx-3">
-        <div class="w-full px-3">
-            <input class="block w-full bg-gray-100 text-gray-700 border border-gray-200 py-3 px-4 mb-3
-                        leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
-                    type="text" 
-                    name="desc"
-                    placeholder="Enter a description" 
-                    value="{{ old('desc') }}">
+        <!------------- Description ------------------>
+        <div class="flex flex-wrap -mx-3">
+            <div class="w-full px-3">
+                <input class="block w-full bg-gray-100 text-gray-700 border border-gray-300 py-3 px-4
+                            leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
+                        wire:model.lazy="description"
+                        name="description"
+                        type="text" 
+                        placeholder="Enter a description">
+            </div>
+            @error('description') @include('partials.error_message') @enderror
         </div>
     </div>
 
     <!------------- Add Fields Buttons ------------>
-    <div class="mt-4 mb-6 text-right">
+    <div class="px-4 text-right">
         <button wire:click.prevent="addField('text')"
                 class="bg-gray-600 text-white hover:bg-red-600 pr-4 pl-3 py-3 font-medium">
             + Text
@@ -41,12 +41,17 @@
             + Option
         </button>
     </div>
-
-    <!------------- Added Fields ------------------->
-    @foreach ($formFields as $indexField => $field)
     
-    <div class="my-12">
-        <?php $fieldType = $field['type'] ?>
+    <!------------- Added Fields ------------------->
+    @foreach ($fields as $indexField => $field)
+    
+    <div class="my-6 py-6 px-4 hover:bg-gray-200">
+        <?php 
+            $fieldType = $field['type'];
+            $questionId = "fields." . $indexField . ".question";
+            $minCharId = "fields." . $indexField . ".min_char";
+            $maxCharId = "fields." . $indexField . ".max_char";
+        ?>
         
         <!-- Field Order -->
         <input type="hidden" name="fields[{{$indexField}}][order]" value="text" >
@@ -58,24 +63,35 @@
             <!-- Text Question -->
             <div class="flex flex-wrap -mx-3">
                 <div class="w-full px-3">
-                    <input class="block w-full bg-gray-100 text-gray-700 border border-gray-200 py-3 px-4 mb-3 
+                    <input class="block w-full bg-gray-100 text-gray-700 border border-gray-300 py-3 px-4 mb-3 
                                 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
-                            wire:model="formFields.{{$indexField}}.question"
+                            wire:model="{{$questionId}}"
                             name="fields[{{$indexField}}][question]" 
                             type="text" 
                             placeholder="Enter question title here">
                 </div>
+                @error("$questionId") @include('partials.error_message') @enderror
             </div>
 
             <!--Text Answer -->
-            <div class="flex flex-wrap -mx-3">
-                <div class="w-full px-3">
-                    <input class="block w-full bg-gray-200 border border-gray-200 py-3 px-4 mb-3 
-                            leading-tight" 
-                            disabled="disabled" 
-                            placeholder="Enter an answer">
+            @if ($field['long_text'] == 'on')
+                <div class="flex flex-wrap -mx-3">
+                    <div class="w-full px-3">
+                        <textarea class="block w-full bg-gray-300 border border-gray-300 py-3 px-4 mb-3"
+                                rows="3"
+                                disabled="disabled"
+                                placeholder="Enter an answer"></textarea>
+                    </div>
                 </div>
-            </div>
+            @else
+                <div class="flex flex-wrap -mx-3">
+                    <div class="w-full px-3">
+                        <input class="block w-full bg-gray-300 border border-gray-300 py-3 px-4 mb-3" 
+                                disabled="disabled"
+                                placeholder="Enter an answer">
+                    </div>
+                </div>
+            @endif
 
             <!-- Min & Max Char-->
             <div class="flex flex-wrap -mx-3 mb-2">
@@ -83,41 +99,44 @@
                     <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="min-char">
                         Min Characters
                     </label>
-                    <input class="block w-full bg-gray-100 text-gray-700 border border-gray-200 rounded py-3 px-4 
+                    <input class="block w-full bg-gray-100 text-gray-700 border border-gray-300 rounded py-3 px-4 
                                 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
-                            wire:model="formFields.{{$indexField}}.min_char"
+                            wire:model="{{$minCharId}}"
                             name="fields[{{$indexField}}][min_char]" 
                             type="text" 
                             placeholder="Set minimum characters">
                 </div>
+                
                 <div class="w-3/4 md:w-1/3 px-3 mb-6 md:mb-0">
                     <label class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="max-char">
                         Max Characters
                     </label>
-                    <input class="block w-full bg-gray-100 text-gray-700 border border-gray-200 rounded py-3 px-4 
+                    <input class="block w-full bg-gray-100 text-gray-700 border border-gray-300 rounded py-3 px-4 
                                 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
-                            wire:model="formFields.{{$indexField}}.max_char"
+                            wire:model="{{$maxCharId}}"
                             name="fields[{{$indexField}}][max_char]" 
                             type="text" 
                             placeholder="Set maximum characters">
                 </div>
             </div>
+            @error("$minCharId") @include('partials.error_message') @enderror
+            @error("$maxCharId") @include('partials.error_message') @enderror
             
             <hr/>
             
             <!-- Text Field Option-->
-            <div class="mb-6 flex justify-between">
+            <div class="flex justify-between">
                 <div class="mt-3">
                     <label class="inline-flex items-center mt-3">
                         <input class="form-checkbox h-5 w-5 text-gray-600" 
-                                wire:model="formFields.{{$indexField}}.long_text"
+                                wire:model="fields.{{$indexField}}.long_text"
                                 name="fields[{{$indexField}}][long_text]" 
                                 type="checkbox">
                         <span class="ml-2 text-gray-700 mr-6">Long Text</span>
                     </label>
                     <label class="inline-flex items-center mt-3">
                         <input class="form-checkbox h-5 w-5 text-gray-600" 
-                                wire:model="formFields.{{$indexField}}.required"
+                                wire:model="fields.{{$indexField}}.required"
                                 name="fields[{{$indexField}}][required]" 
                                 type="checkbox">
                         <span class="ml-2 text-gray-700">Required</span>
@@ -141,34 +160,50 @@
             <!-- Choice Question -->
             <div class="flex flex-wrap -mx-3">
                 <div class="w-full px-3">
-                    <input class="block w-full bg-gray-100 text-gray-700 border border-gray-200 py-3 px-4 mb-3 
+                    <input class="block w-full bg-gray-100 text-gray-700 border border-gray-300 py-3 px-4 mb-3 
                             leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                            wire:model="formFields.{{$indexField}}.question"
+                            wire:model="{{$questionId}}"
                             name="fields[{{$indexField}}][question]" 
                             type="text" 
                             placeholder="Enter question title here">
                 </div>
+                @error("$questionId") @include('partials.error_message') @enderror
             </div>
 
-            <!--Choice Options -->
+            <!--Option Answer -->
             <div class="flex flex-wrap -mx-3 mb-2">
                 @foreach ($field['options'] as $indexAnswer => $option)
-                <div class="inline-flex items-center w-9/12 mx-3 my-2">
-                    <input type="radio" class="bg-gray-200 h-5 w-5 border-2 mr-4" disabled="disabled">
-                    <input class="w-full bg-gray-100 text-gray-700 border border-gray-200 rounded py-3 px-4 
-                            leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                            wire:model="formFields.{{$indexField}}.options.{{$indexAnswer}}"
-                            name="fields[{{$indexField}}][options][]"
-                            type="text" 
-                            placeholder="Enter name for this option">
-                </div>
-                <div class="inline-flex items-center">
-                    <a class="bg-red-500 text-white px-3 py-2" 
-                        href="#" 
-                        wire:click.prevent="removeAnswer({{$indexField}},{{$indexAnswer}})">
-                        Delete
-                    </a>
-                </div>
+                    <?php $answerId = "fields." . $indexField . ".options." . $indexAnswer;?>
+
+                    <div class="inline-flex items-center w-9/12 mx-3 my-2">
+                        @if ($field['multiple'] == 'on')
+                            <input class="h-5 w-5 border-2 mr-4" type="checkbox" disabled="disabled">
+                        @else
+                            <input type="radio" class="h-5 w-5 border-2 mr-4" disabled="disabled">
+                        @endif
+
+                        <input class="w-full bg-gray-100 text-gray-700 border border-gray-300 rounded py-3 px-4 
+                                leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                                wire:model="{{$answerId}}"
+                                name="fields[{{$indexField}}][options][]"
+                                type="text" 
+                                placeholder="Enter name for this option">
+                    </div>
+                    <div class="inline-flex items-center">
+                        <a class="bg-red-500 text-white px-3 py-2" 
+                            href="#" 
+                            wire:click.prevent="removeAnswer({{$indexField}},{{$indexAnswer}})">
+                            X
+                        </a>
+                        @if ($loop->last)
+                        <a class="bg-gray-500 text-white px-3 py-2 mx-2" 
+                            wire:click.prevent="addAnswer({{$indexField}})"
+                            href="#">
+                            + Answer
+                        </a>
+                        @endif
+                    </div>
+                    @error("$answerId") @include('partials.error_message') @enderror
                 @endforeach
             </div>
 
@@ -179,18 +214,20 @@
                 <div class="mt-3">
                     <label class="inline-flex items-center mt-3">
                         <input class="form-checkbox h-5 w-5 text-gray-600" 
-                                wire:model="formFields.{{$indexField}}.required"
+                                wire:model="fields.{{$indexField}}.multiple"
+                                name="fields[{{$indexField}}][multiple]" 
+                                type="checkbox">
+                        <span class="ml-2 text-gray-700 mr-6">Multiple</span>
+                    </label>
+                    <label class="inline-flex items-center mt-3">
+                        <input class="form-checkbox h-5 w-5 text-gray-600" 
+                                wire:model="fields.{{$indexField}}.required"
                                 name="fields[{{$indexField}}][required]" 
                                 type="checkbox">
                         <span class="ml-2 text-gray-700">Required</span>
                     </label>
                 </div>
                 <div class="inline-flex items-center mt-3">
-                    <a class="bg-gray-500 text-white px-3 py-2 mr-3" 
-                        wire:click.prevent="addAnswer({{$indexField}})"
-                        href="#">
-                        + Answer
-                    </a>
                     <a class="bg-red-500 text-white px-3 py-2" 
                         wire:click.prevent="removeField({{$indexField}})"
                         href="#">
@@ -205,7 +242,15 @@
     
     <!-- Submit Form-->
     <div>
-        <button type="submit" class="bg-blue-500 text-white px-4 py-3 rounded font-medium w-full">Create</button>
+        <button type="submit"
+            @if ($errors->any())
+                class="bg-gray-500 text-white px-4 py-3 rounded font-medium w-full"
+                disabled="disabled"
+            @else
+                class="bg-blue-500 text-white px-4 py-3 rounded font-medium w-full"
+            @endif
+            > Create
+        </button>
     </div>
 </form>
 </div>
