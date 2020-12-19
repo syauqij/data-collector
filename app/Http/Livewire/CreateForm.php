@@ -7,7 +7,7 @@ use Livewire\Component;
 use Illuminate\Http\Request;
 use Barryvdh\Debugbar\Facade as Debugbar;
 
-class Forms extends Component
+class CreateForm extends Component
 {   
     public $title = "Untitled Form";
     public $description;
@@ -72,6 +72,7 @@ class Forms extends Component
     {   
         unset($this->fields[$index]);
         $this->fields = array_values($this->fields);
+        Debugbar::info($this->fields);
     }
 
     public function addAnswer($index)
@@ -89,6 +90,6 @@ class Forms extends Component
     {   
         $errors = $this->getErrorBag();
         Debugbar::info($errors);
-        return view('livewire.forms');
+        return view('livewire.create-form');
     }
 }

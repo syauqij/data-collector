@@ -240,19 +240,26 @@
 
         @endif
     </div>
+
     @endforeach
-    
-    <!-- Submit Form-->
-    <div>
-        <button type="submit"
-            @if ($errors->any())
-                class="bg-gray-500 text-white px-4 py-3 rounded font-medium w-full"
-                disabled="disabled"
-            @else
-                class="bg-blue-500 text-white px-4 py-3 rounded font-medium w-full"
-            @endif
-            > Create
-        </button>
+
+    <div class="py-2 px-4">
+        @if(empty($fields))
+            <h3 class="text-red-500 text-xl">
+                Form requires at least one content field.
+            </h3>
+        @else
+            <!-- Submit Form-->
+            <button type="submit"
+                @if ($errors->any())
+                    class="bg-gray-500 text-white px-4 py-3 rounded font-medium w-full"
+                    disabled="disabled"
+                @else
+                    class="bg-blue-500 text-white px-4 py-3 rounded font-medium w-full"
+                @endif
+                > Create
+            </button>
+        @endif
     </div>
 </form>
 </div>
