@@ -30,11 +30,6 @@ class FormController extends Controller
         return view('forms.create');
     }
     
-    public function submit(Form $form)
-    {   
-        return view('forms.submit', compact('form'));
-    }
-
     public function destroy()
     {
         
